@@ -1,443 +1,394 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
-const PORTFOLIO_IMAGES = [
-  {
-    src: "https://cdn.poehali.dev/projects/7c0ec440-0f2b-47f4-8ea6-f50eb7ce6448/files/9ca88e65-527c-4d74-968d-76472c719d27.jpg",
-    title: "Проект «Алхимия»",
-    category: "Визуальное искусство",
-  },
-  {
-    src: "https://cdn.poehali.dev/projects/7c0ec440-0f2b-47f4-8ea6-f50eb7ce6448/files/6a11bf24-fc56-4498-8461-50761bf635b8.jpg",
-    title: "Проект «Золото»",
-    category: "Брендинг",
-  },
-  {
-    src: "https://cdn.poehali.dev/projects/7c0ec440-0f2b-47f4-8ea6-f50eb7ce6448/files/ba1f83ca-adcd-4a7e-a04d-66bf1329f99f.jpg",
-    title: "Проект «Тени»",
-    category: "Фотография",
-  },
-  {
-    src: "https://cdn.poehali.dev/projects/7c0ec440-0f2b-47f4-8ea6-f50eb7ce6448/files/fb4c6d5a-9e65-4511-b23e-aa74b599074c.jpg",
-    title: "Проект «Бархат»",
-    category: "Арт-дирекшн",
-  },
+const AVATAR = "https://cdn.poehali.dev/projects/7c0ec440-0f2b-47f4-8ea6-f50eb7ce6448/files/b0034204-7487-4e3e-8ec4-b3366567d827.jpg";
+const HOBBIES_IMG = "https://cdn.poehali.dev/projects/7c0ec440-0f2b-47f4-8ea6-f50eb7ce6448/files/24200c76-fe7b-4b99-bb0f-5519b758534a.jpg";
+
+const INTERESTS = [
+  { emoji: "⚔️", title: "Аниме", desc: "Смотрю всё подряд. Особенно экшн и сёнен.", color: "#7C3AED" },
+  { emoji: "🏀", title: "Спорт", desc: "Баскетбол, тренировки, движение — это кайф.", color: "#2563EB" },
+  { emoji: "🎮", title: "Roblox", desc: "С пацанами в роблок — святое дело.", color: "#16A34A" },
+  { emoji: "📚", title: "9 класс", desc: "Учусь, иногда даже нравится.", color: "#EA580C" },
 ];
 
-const SERVICES = [
-  { icon: "Brush", title: "Арт-дирекшн", desc: "Создание визуальной концепции, которая работает на ваш бренд" },
-  { icon: "Camera", title: "Фотосъёмка", desc: "Атмосферные снимки, передающие характер и настроение" },
-  { icon: "Film", title: "Видеопроизводство", desc: "Кинематографичные ролики от идеи до финального монтажа" },
-  { icon: "Palette", title: "Дизайн бренда", desc: "Фирменный стиль, который запоминается и продаёт" },
-];
+const ANIME_TITLES = ["Наруто", "Атака Титанов", "Блич", "Охотник × Охотник", "Джуджутсу Кайсен"];
 
 export default function Index() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [activeService, setActiveService] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [animeIdx, setAnimeIdx] = useState(0);
+  const [glitch, setGlitch] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true);
+    setMounted(true);
+    const interval = setInterval(() => {
+      setGlitch(true);
+      setTimeout(() => {
+        setAnimeIdx(i => (i + 1) % ANIME_TITLES.length);
+        setGlitch(false);
+      }, 150);
+    }, 2500);
+    return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0E0C0A" }}>
+    <div style={{ minHeight: "100vh", background: "#0A0A0F", color: "#F0EEFF", fontFamily: "'Golos Text', sans-serif", overflowX: "hidden" }}>
+
+      {/* Animated background grid */}
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none",
+        backgroundImage: `linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px)`,
+        backgroundSize: "60px 60px",
+      }} />
+
+      {/* Glow orbs */}
+      <div style={{
+        position: "fixed", top: -200, right: -200, width: 600, height: 600,
+        borderRadius: "50%", background: "radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)",
+        filter: "blur(60px)", zIndex: 0, pointerEvents: "none",
+      }} />
+      <div style={{
+        position: "fixed", bottom: -100, left: -100, width: 400, height: 400,
+        borderRadius: "50%", background: "radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%)",
+        filter: "blur(50px)", zIndex: 0, pointerEvents: "none",
+      }} />
 
       {/* NAV */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5"
-        style={{ background: "linear-gradient(to bottom, rgba(14,12,10,0.95), transparent)" }}
-      >
-        <div className="font-display text-xl tracking-widest" style={{ color: "var(--gold-light)", fontFamily: "'Cormorant Garamond', serif" }}>
-          СТУДИЯ
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "16px 32px",
+        background: "rgba(10,10,15,0.85)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(124,58,237,0.2)",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 22 }}>⚡</span>
+          <span style={{ fontFamily: "'Golos Text', sans-serif", fontWeight: 700, fontSize: 18, letterSpacing: 2, color: "#A78BFA" }}>
+            АРТЁМ
+          </span>
         </div>
-        <div className="hidden md:flex gap-10 text-xs tracking-widest uppercase" style={{ color: "rgba(237,232,223,0.55)", fontFamily: "'Golos Text', sans-serif" }}>
-          <a href="#about" className="hover:text-white transition-colors duration-300">О нас</a>
-          <a href="#portfolio" className="hover:text-white transition-colors duration-300">Работы</a>
-          <a href="#video" className="hover:text-white transition-colors duration-300">Видео</a>
-          <a href="#contact" className="hover:text-white transition-colors duration-300">Контакт</a>
+        <div style={{ display: "flex", gap: 24, fontSize: 13, color: "rgba(240,238,255,0.5)" }}>
+          <a href="#about" style={{ color: "inherit", textDecoration: "none" }} onMouseEnter={e => (e.currentTarget.style.color = "#A78BFA")} onMouseLeave={e => (e.currentTarget.style.color = "rgba(240,238,255,0.5)")}>обо мне</a>
+          <a href="#interests" style={{ color: "inherit", textDecoration: "none" }} onMouseEnter={e => (e.currentTarget.style.color = "#A78BFA")} onMouseLeave={e => (e.currentTarget.style.color = "rgba(240,238,255,0.5)")}>интересы</a>
+          <a href="#contact" style={{ color: "inherit", textDecoration: "none" }} onMouseEnter={e => (e.currentTarget.style.color = "#A78BFA")} onMouseLeave={e => (e.currentTarget.style.color = "rgba(240,238,255,0.5)")}>связь</a>
         </div>
-        <button className="btn-gold px-5 py-2.5 rounded-sm">Связаться</button>
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        <div
-          className="absolute animate-pulse-gold"
-          style={{
-            top: "15%", left: "60%",
-            width: 500, height: 500,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%)",
-            filter: "blur(40px)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            bottom: "10%", left: "5%",
-            width: 300, height: 300,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%)",
-            filter: "blur(30px)",
-          }}
-        />
-        <div
-          className="absolute right-0 top-0 h-full w-px opacity-20"
-          style={{ background: "linear-gradient(to bottom, transparent, var(--gold), transparent)" }}
-        />
+      <section style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", alignItems: "center", padding: "120px 32px 60px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
 
-        <div className="relative z-10 px-8 md:px-20 max-w-6xl">
-          <div
-            style={{
-              transition: "all 1s ease",
-              opacity: isVisible ? 1 : 0,
-              transform: isVisible ? "translateY(0)" : "translateY(40px)",
-            }}
-          >
-            <div
-              className="inline-flex items-center gap-3 mb-8 px-4 py-2 rounded-sm border"
-              style={{ borderColor: "rgba(201,168,76,0.3)", background: "rgba(201,168,76,0.06)" }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "var(--gold)", display: "inline-block" }} />
-              <span className="text-xs tracking-widest uppercase" style={{ color: "var(--gold)", fontFamily: "'Golos Text', sans-serif" }}>
-                Творческая студия
+          {/* Text side */}
+          <div style={{ opacity: mounted ? 1 : 0, transform: mounted ? "translateX(0)" : "translateX(-40px)", transition: "all 0.9s ease" }}>
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 24,
+              padding: "6px 14px", borderRadius: 999,
+              background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.4)",
+              fontSize: 12, color: "#A78BFA", letterSpacing: 2, textTransform: "uppercase",
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#A78BFA", display: "inline-block", animation: "pulse 2s infinite" }} />
+              Личная страница
+            </div>
+
+            <h1 style={{
+              fontSize: "clamp(3rem, 7vw, 6rem)",
+              fontFamily: "'Golos Text', sans-serif",
+              fontWeight: 900,
+              lineHeight: 1.05,
+              marginBottom: 16,
+              letterSpacing: -2,
+            }}>
+              <span style={{ color: "#F0EEFF" }}>Привет,</span>
+              <br />
+              <span style={{
+                background: "linear-gradient(135deg, #7C3AED, #60A5FA, #A78BFA)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}>
+                я Артём
+              </span>
+              <span style={{ color: "#F0EEFF" }}> ✌️</span>
+            </h1>
+
+            <p style={{ color: "rgba(240,238,255,0.55)", fontSize: 16, lineHeight: 1.7, marginBottom: 32, maxWidth: 440 }}>
+              9-классник, который фанатеет от аниме, рубится в Roblox с пацанами
+              и иногда даже ходит на тренировки. Это моя страница — добро пожаловать!
+            </p>
+
+            {/* Anime ticker */}
+            <div style={{
+              display: "flex", alignItems: "center", gap: 12, marginBottom: 40,
+              padding: "12px 20px", borderRadius: 12,
+              background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)",
+            }}>
+              <span style={{ fontSize: 18 }}>📺</span>
+              <span style={{ fontSize: 13, color: "rgba(240,238,255,0.5)" }}>сейчас смотрю:</span>
+              <span style={{
+                fontWeight: 700, color: "#A78BFA",
+                opacity: glitch ? 0.3 : 1,
+                transform: glitch ? "skewX(-5deg)" : "skewX(0deg)",
+                transition: "all 0.15s",
+                letterSpacing: 0.5,
+              }}>
+                {ANIME_TITLES[animeIdx]}
               </span>
             </div>
 
-            <h1
-              style={{
-                fontSize: "clamp(3.5rem, 9vw, 8rem)",
-                color: "#EDE8DF",
-                fontStyle: "italic",
-                fontWeight: 300,
-                fontFamily: "'Cormorant Garamond', serif",
-                lineHeight: 1,
-                marginBottom: "1.5rem",
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <a href="#interests" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "14px 28px", borderRadius: 12,
+                background: "linear-gradient(135deg, #7C3AED, #60A5FA)",
+                color: "#fff", fontWeight: 700, fontSize: 14,
+                textDecoration: "none", letterSpacing: 0.5,
+                boxShadow: "0 0 30px rgba(124,58,237,0.4)",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
               }}
-            >
-              Мы создаём
-              <br />
-              <span style={{ color: "var(--gold-light)" }}>искусство</span>
-              <br />
-              из идей
-            </h1>
-
-            <p
-              style={{
-                color: "rgba(237,232,223,0.6)",
-                fontSize: "1.1rem",
-                fontFamily: "'Golos Text', sans-serif",
-                lineHeight: 1.7,
-                marginBottom: "3rem",
-                maxWidth: 480,
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 0 40px rgba(124,58,237,0.6)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 0 30px rgba(124,58,237,0.4)"; }}
+              >
+                Узнать обо мне <Icon name="ChevronDown" size={16} />
+              </a>
+              <a href="#contact" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "14px 28px", borderRadius: 12,
+                border: "1px solid rgba(124,58,237,0.4)", color: "#A78BFA",
+                fontWeight: 600, fontSize: 14, textDecoration: "none",
+                background: "rgba(124,58,237,0.08)", transition: "all 0.2s ease",
               }}
-            >
-              Каждый проект — это история. Мы воплощаем ваш замысел в визуальные образы,
-              которые остаются в памяти.
-            </p>
-
-            <div className="flex flex-wrap gap-4">
-              <button className="btn-gold px-8 py-4 rounded-sm flex items-center gap-2">
-                Смотреть работы
-                <Icon name="ArrowRight" size={16} />
-              </button>
-              <button className="btn-outline-gold px-8 py-4 rounded-sm">
-                Обсудить проект
-              </button>
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(124,58,237,0.18)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(124,58,237,0.08)"; }}
+              >
+                Написать 💬
+              </a>
             </div>
           </div>
 
-          {/* Floating accent image */}
-          <div
-            className="absolute hidden lg:block animate-float"
-            style={{ right: 80, top: "50%", transform: "translateY(-50%)", width: 320, height: 420 }}
-          >
-            <div
-              className="w-full h-full rounded-sm overflow-hidden"
-              style={{ border: "1px solid rgba(201,168,76,0.2)" }}
-            >
-              <img
-                src={PORTFOLIO_IMAGES[0].src}
-                alt="Portfolio"
-                className="w-full h-full object-cover"
-              />
-              <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(to top, rgba(14,12,10,0.6) 0%, transparent 50%)" }}
-              />
-            </div>
-            <div
-              className="absolute px-4 py-2 rounded-sm"
-              style={{
-                bottom: -16, left: -16,
-                background: "#1E1B16",
-                border: "1px solid rgba(201,168,76,0.2)",
-              }}
-            >
-              <p style={{ color: "var(--gold)", fontFamily: "'Golos Text', sans-serif", fontSize: 12 }}>Избранное 2024</p>
+          {/* Avatar side */}
+          <div style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? "translateX(0)" : "translateX(40px)",
+            transition: "all 0.9s ease 0.2s",
+            display: "flex", justifyContent: "center",
+          }}>
+            <div style={{ position: "relative" }}>
+              {/* Rotating ring */}
+              <div style={{
+                position: "absolute", inset: -20,
+                borderRadius: "50%",
+                border: "2px dashed rgba(124,58,237,0.3)",
+                animation: "spin 20s linear infinite",
+              }} />
+              <div style={{
+                position: "absolute", inset: -8,
+                borderRadius: "50%",
+                border: "1px solid rgba(96,165,250,0.2)",
+                animation: "spin 15s linear infinite reverse",
+              }} />
+
+              {/* Avatar image */}
+              <div style={{
+                width: 300, height: 300, borderRadius: "50%", overflow: "hidden",
+                border: "3px solid rgba(124,58,237,0.5)",
+                boxShadow: "0 0 60px rgba(124,58,237,0.3), 0 0 120px rgba(124,58,237,0.1)",
+                position: "relative",
+              }}>
+                <img src={AVATAR} alt="Артём" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              </div>
+
+              {/* Floating badges */}
+              <div style={{
+                position: "absolute", top: 20, right: -30,
+                padding: "8px 14px", borderRadius: 999,
+                background: "rgba(124,58,237,0.9)", backdropFilter: "blur(10px)",
+                fontSize: 13, fontWeight: 700, color: "#fff",
+                animation: "float 3s ease-in-out infinite",
+              }}>⚔️ аниме фан</div>
+              <div style={{
+                position: "absolute", bottom: 30, left: -40,
+                padding: "8px 14px", borderRadius: 999,
+                background: "rgba(37,99,235,0.9)", backdropFilter: "blur(10px)",
+                fontSize: 13, fontWeight: 700, color: "#fff",
+                animation: "float 3s ease-in-out infinite 1s",
+              }}>🎮 roblox</div>
+              <div style={{
+                position: "absolute", bottom: -10, right: -20,
+                padding: "8px 14px", borderRadius: 999,
+                background: "rgba(22,163,74,0.9)", backdropFilter: "blur(10px)",
+                fontSize: 13, fontWeight: 700, color: "#fff",
+                animation: "float 3s ease-in-out infinite 0.5s",
+              }}>🏀 спорт</div>
             </div>
           </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 flex flex-col items-center gap-2" style={{ transform: "translateX(-50%)" }}>
-          <span className="text-xs tracking-widest uppercase" style={{ color: "rgba(237,232,223,0.3)", fontFamily: "'Golos Text', sans-serif" }}>
-            Прокрутите
-          </span>
-          <div className="w-px h-12" style={{ background: "linear-gradient(to bottom, rgba(201,168,76,0.5), transparent)" }} />
         </div>
       </section>
 
-      {/* SERVICES */}
-      <section id="about" className="relative py-32 px-8 md:px-20">
-        <div className="gold-line mb-20" />
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-20 relative">
-            <span className="section-number">01</span>
-            <p className="text-xs tracking-widest uppercase mb-4" style={{ color: "var(--gold)", fontFamily: "'Golos Text', sans-serif" }}>
-              Что мы делаем
-            </p>
-            <h2 style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#EDE8DF", fontStyle: "italic", fontWeight: 300, fontFamily: "'Cormorant Garamond', serif" }}>
-              Услуги студии
+      {/* INTERESTS */}
+      <section id="interests" style={{ position: "relative", zIndex: 1, padding: "80px 32px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 60 }}>
+            <p style={{ fontSize: 12, letterSpacing: 4, color: "#7C3AED", textTransform: "uppercase", marginBottom: 12 }}>мои увлечения</p>
+            <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 900, color: "#F0EEFF", letterSpacing: -1 }}>
+              Чем я живу 🔥
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-px" style={{ background: "rgba(201,168,76,0.1)" }}>
-            {SERVICES.map((service, i) => (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
+            {INTERESTS.map((item, i) => (
               <div
                 key={i}
-                className="relative p-10 cursor-pointer"
+                onMouseEnter={() => setActiveCard(i)}
+                onMouseLeave={() => setActiveCard(null)}
                 style={{
-                  background: activeService === i ? "rgba(201,168,76,0.06)" : "#0E0C0A",
-                  transition: "background 0.5s ease",
+                  padding: 32, borderRadius: 20, cursor: "default",
+                  background: activeCard === i ? `rgba(${item.color === "#7C3AED" ? "124,58,237" : item.color === "#2563EB" ? "37,99,235" : item.color === "#16A34A" ? "22,163,74" : "234,88,12"},0.12)` : "rgba(255,255,255,0.03)",
+                  border: `1px solid ${activeCard === i ? item.color + "60" : "rgba(255,255,255,0.06)"}`,
+                  transform: activeCard === i ? "translateY(-6px)" : "translateY(0)",
+                  boxShadow: activeCard === i ? `0 20px 60px ${item.color}25` : "none",
+                  transition: "all 0.3s ease",
                 }}
-                onMouseEnter={() => setActiveService(i)}
-                onMouseLeave={() => setActiveService(null)}
               >
-                <div
-                  className="mb-6 w-12 h-12 rounded-sm flex items-center justify-center"
-                  style={{
-                    border: "1px solid rgba(201,168,76,0.3)",
-                    background: activeService === i ? "rgba(201,168,76,0.15)" : "transparent",
-                    transition: "background 0.3s ease",
-                  }}
-                >
-                  <Icon name={service.icon} size={20} style={{ color: "var(--gold)" }} />
-                </div>
-                <h3
-                  style={{
-                    fontSize: "1.6rem",
-                    color: activeService === i ? "var(--gold-light)" : "#EDE8DF",
-                    fontStyle: "italic",
-                    fontFamily: "'Cormorant Garamond', serif",
-                    marginBottom: "0.75rem",
-                    transition: "color 0.3s ease",
-                  }}
-                >
-                  {service.title}
+                <div style={{ fontSize: 44, marginBottom: 16 }}>{item.emoji}</div>
+                <h3 style={{ fontSize: 22, fontWeight: 800, color: "#F0EEFF", marginBottom: 10, letterSpacing: -0.5 }}>
+                  {item.title}
                 </h3>
-                <p style={{ color: "rgba(237,232,223,0.5)", fontFamily: "'Golos Text', sans-serif", fontSize: 14, lineHeight: 1.7 }}>
-                  {service.desc}
+                <p style={{ fontSize: 14, color: "rgba(240,238,255,0.5)", lineHeight: 1.6 }}>
+                  {item.desc}
                 </p>
-                <div
-                  className="absolute bottom-0 left-0 h-px"
-                  style={{
-                    width: activeService === i ? "100%" : "0%",
-                    background: "var(--gold)",
-                    transition: "width 0.5s ease",
-                  }}
-                />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* PORTFOLIO */}
-      <section id="portfolio" className="relative py-32 px-8 md:px-20">
-        <div className="gold-line mb-20" />
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-end justify-between mb-20">
-            <div className="relative">
-              <span className="section-number">02</span>
-              <p className="text-xs tracking-widest uppercase mb-4" style={{ color: "var(--gold)", fontFamily: "'Golos Text', sans-serif" }}>
-                Наши работы
+      {/* HOBBIES IMAGE SECTION */}
+      <section style={{ position: "relative", zIndex: 1, padding: "40px 32px 80px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{
+            borderRadius: 24, overflow: "hidden", position: "relative",
+            border: "1px solid rgba(124,58,237,0.2)",
+            boxShadow: "0 0 80px rgba(124,58,237,0.1)",
+          }}>
+            <img src={HOBBIES_IMG} alt="Интересы" style={{ width: "100%", height: 380, objectFit: "cover", display: "block" }} />
+            <div style={{
+              position: "absolute", inset: 0,
+              background: "linear-gradient(to right, rgba(10,10,15,0.85) 0%, rgba(10,10,15,0.3) 50%, transparent 100%)",
+            }} />
+            <div style={{ position: "absolute", top: "50%", left: 48, transform: "translateY(-50%)" }}>
+              <p style={{ fontSize: 13, color: "#A78BFA", letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>
+                каждый день
               </p>
-              <h2 style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#EDE8DF", fontStyle: "italic", fontWeight: 300, fontFamily: "'Cormorant Garamond', serif" }}>
-                Портфолио
-              </h2>
+              <h3 style={{ fontSize: "clamp(1.8rem, 3vw, 2.8rem)", fontWeight: 900, color: "#F0EEFF", lineHeight: 1.2, letterSpacing: -1, maxWidth: 400 }}>
+                Аниме, геймплей,
+                <br />тренировки
+                <br /><span style={{ color: "#A78BFA" }}>— вот и весь план 😎</span>
+              </h3>
             </div>
-            <button className="btn-outline-gold px-6 py-3 rounded-sm hidden md:block">
-              Все работы
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <div className="gallery-item col-span-2 rounded-sm" style={{ aspectRatio: "16/9" }}>
-              <img src={PORTFOLIO_IMAGES[0].src} alt={PORTFOLIO_IMAGES[0].title} className="w-full h-full object-cover" />
-              <div className="overlay" />
-              <div className="absolute bottom-0 left-0 p-6 z-10">
-                <p className="text-xs tracking-widest uppercase mb-1" style={{ color: "var(--gold)", fontFamily: "'Golos Text', sans-serif" }}>
-                  {PORTFOLIO_IMAGES[0].category}
-                </p>
-                <h3 style={{ fontSize: "1.4rem", fontStyle: "italic", color: "#EDE8DF", fontFamily: "'Cormorant Garamond', serif" }}>
-                  {PORTFOLIO_IMAGES[0].title}
-                </h3>
-              </div>
-            </div>
-
-            <div className="gallery-item rounded-sm" style={{ aspectRatio: "9/10" }}>
-              <img src={PORTFOLIO_IMAGES[1].src} alt={PORTFOLIO_IMAGES[1].title} className="w-full h-full object-cover" />
-              <div className="overlay" />
-            </div>
-
-            <div className="gallery-item rounded-sm" style={{ aspectRatio: "9/10" }}>
-              <img src={PORTFOLIO_IMAGES[2].src} alt={PORTFOLIO_IMAGES[2].title} className="w-full h-full object-cover" />
-              <div className="overlay" />
-            </div>
-
-            <div className="gallery-item col-span-2 rounded-sm" style={{ aspectRatio: "16/7" }}>
-              <img src={PORTFOLIO_IMAGES[3].src} alt={PORTFOLIO_IMAGES[3].title} className="w-full h-full object-cover" />
-              <div className="overlay" />
-            </div>
-          </div>
-
-          <div className="flex justify-center mt-10 md:hidden">
-            <button className="btn-outline-gold px-6 py-3 rounded-sm">Все работы</button>
           </div>
         </div>
       </section>
 
-      {/* VIDEO */}
-      <section id="video" className="relative py-32 px-8 md:px-20 overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{ background: "radial-gradient(ellipse at center, rgba(201,168,76,0.08) 0%, transparent 70%)" }}
-        />
-        <div className="gold-line mb-20" />
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="mb-16 relative">
-            <span className="section-number">03</span>
-            <p className="text-xs tracking-widest uppercase mb-4" style={{ color: "var(--gold)", fontFamily: "'Golos Text', sans-serif" }}>
-              Как мы работаем
-            </p>
-            <h2 style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#EDE8DF", fontStyle: "italic", fontWeight: 300, fontFamily: "'Cormorant Garamond', serif" }}>
-              Посмотрите на процесс
+      {/* FUN FACTS */}
+      <section style={{ position: "relative", zIndex: 1, padding: "40px 32px 80px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <p style={{ fontSize: 12, letterSpacing: 4, color: "#7C3AED", textTransform: "uppercase", marginBottom: 12 }}>факты</p>
+            <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 3rem)", fontWeight: 900, color: "#F0EEFF", letterSpacing: -1 }}>
+              Немного цифр 📊
             </h2>
           </div>
-
-          <div
-            className="relative rounded-sm overflow-hidden"
-            style={{ border: "1px solid rgba(201,168,76,0.2)", aspectRatio: "16/9" }}
-          >
-            <iframe
-              width="100%"
-              height="100%"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1"
-              title="Демонстрация услуги"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-            />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+            {[
+              { num: "9", label: "класс", icon: "📚" },
+              { num: "∞", label: "серий аниме", icon: "📺" },
+              { num: "100+", label: "часов в Roblox", icon: "🎮" },
+              { num: "7", label: "дней в неделю хорошее настроение", icon: "😎" },
+            ].map((stat, i) => (
+              <div key={i} style={{
+                padding: "28px 20px", borderRadius: 16, textAlign: "center",
+                background: "rgba(255,255,255,0.03)", border: "1px solid rgba(124,58,237,0.15)",
+              }}>
+                <div style={{ fontSize: 28, marginBottom: 8 }}>{stat.icon}</div>
+                <p style={{ fontSize: "2.5rem", fontWeight: 900, color: "#A78BFA", lineHeight: 1, marginBottom: 6, letterSpacing: -1 }}>
+                  {stat.num}
+                </p>
+                <p style={{ fontSize: 12, color: "rgba(240,238,255,0.4)", lineHeight: 1.4 }}>{stat.label}</p>
+              </div>
+            ))}
           </div>
-
-          <p className="mt-6 text-center text-sm" style={{ color: "rgba(237,232,223,0.35)", fontFamily: "'Golos Text', sans-serif" }}>
-            Замените это видео ссылкой на ваш YouTube-ролик
-          </p>
         </div>
       </section>
 
-      {/* STATS */}
-      <section className="py-20 px-8 md:px-20">
-        <div className="gold-line mb-16" />
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { num: "120+", label: "Проектов выполнено" },
-            { num: "7", label: "Лет на рынке" },
-            { num: "48", label: "Постоянных клиентов" },
-            { num: "12", label: "Наград и премий" },
-          ].map((stat, i) => (
-            <div key={i} className="text-center">
-              <p style={{ fontSize: "3.5rem", color: "var(--gold)", fontWeight: 300, fontFamily: "'Cormorant Garamond', serif", lineHeight: 1, marginBottom: "0.5rem" }}>
-                {stat.num}
-              </p>
-              <p className="text-xs tracking-wide uppercase" style={{ color: "rgba(237,232,223,0.45)", fontFamily: "'Golos Text', sans-serif" }}>
-                {stat.label}
-              </p>
+      {/* CONTACT */}
+      <section id="contact" style={{ position: "relative", zIndex: 1, padding: "40px 32px 100px" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+          <div style={{
+            padding: 56, borderRadius: 28,
+            background: "linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(37,99,235,0.1) 100%)",
+            border: "1px solid rgba(124,58,237,0.3)",
+            boxShadow: "0 0 80px rgba(124,58,237,0.1)",
+          }}>
+            <div style={{ fontSize: 56, marginBottom: 20 }}>👋</div>
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 900, color: "#F0EEFF", marginBottom: 16, letterSpacing: -1 }}>
+              Пиши, не стесняйся!
+            </h2>
+            <p style={{ color: "rgba(240,238,255,0.5)", lineHeight: 1.7, marginBottom: 36, fontSize: 15 }}>
+              Хочешь обсудить аниме, поиграть в Roblox или просто чилл? — пиши.
+              Всегда рад новым людям 🤙
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+              <a href="https://t.me/" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "14px 28px", borderRadius: 12,
+                background: "linear-gradient(135deg, #7C3AED, #60A5FA)",
+                color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none",
+                boxShadow: "0 0 30px rgba(124,58,237,0.4)",
+              }}>
+                <Icon name="Send" size={16} /> Telegram
+              </a>
+              <a href="https://vk.com/" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "14px 28px", borderRadius: 12,
+                border: "1px solid rgba(124,58,237,0.4)",
+                color: "#A78BFA", fontWeight: 600, fontSize: 14, textDecoration: "none",
+                background: "rgba(124,58,237,0.08)",
+              }}>
+                <Icon name="Users" size={16} /> ВКонтакте
+              </a>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA / CONTACT */}
-      <section id="contact" className="relative py-32 px-8 md:px-20 overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(201,168,76,0.06) 0%, transparent 60%)" }} />
-        <div
-          className="absolute top-0 right-0 bottom-0 w-px"
-          style={{ background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.3), transparent)" }}
-        />
-        <div className="max-w-3xl mx-auto text-center relative z-10">
-          <p className="text-xs tracking-widest uppercase mb-6" style={{ color: "var(--gold)", fontFamily: "'Golos Text', sans-serif" }}>
-            Начнём сотрудничество
-          </p>
-          <h2
-            style={{
-              fontSize: "clamp(2.5rem, 6vw, 5rem)",
-              color: "#EDE8DF",
-              fontStyle: "italic",
-              fontWeight: 300,
-              fontFamily: "'Cormorant Garamond', serif",
-              lineHeight: 1.15,
-              marginBottom: "2rem",
-            }}
-          >
-            Готовы создать
-            <br />
-            что-то особенное?
-          </h2>
-          <p style={{ color: "rgba(237,232,223,0.55)", fontSize: "1.05rem", fontFamily: "'Golos Text', sans-serif", lineHeight: 1.7, marginBottom: "3rem" }}>
-            Расскажите нам о вашем проекте. Мы свяжемся в течение 24 часов
-            и предложим концепцию, которая вас вдохновит.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <button className="btn-gold px-10 py-4 rounded-sm flex items-center gap-2 text-sm">
-              <Icon name="Mail" size={16} />
-              Написать нам
-            </button>
-            <button className="btn-outline-gold px-10 py-4 rounded-sm flex items-center gap-2 text-sm">
-              <Icon name="Phone" size={16} />
-              Позвонить
-            </button>
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="py-10 px-8 md:px-20" style={{ borderTop: "1px solid rgba(201,168,76,0.12)" }}>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.125rem", letterSpacing: "0.1em", color: "var(--gold-light)" }}>
-            СТУДИЯ
-          </p>
-          <p className="text-xs" style={{ color: "rgba(237,232,223,0.25)", fontFamily: "'Golos Text', sans-serif" }}>
-            © 2024 Творческая Студия. Все права защищены.
-          </p>
-          <div className="flex gap-6">
-            {["Instagram", "Telegram", "VK"].map((social) => (
-              <a
-                key={social}
-                href="#"
-                className="text-xs tracking-widest uppercase transition-colors duration-300"
-                style={{ color: "rgba(237,232,223,0.3)", fontFamily: "'Golos Text', sans-serif" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--gold)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(237,232,223,0.3)")}
-              >
-                {social}
-              </a>
-            ))}
-          </div>
-        </div>
+      <footer style={{
+        position: "relative", zIndex: 1,
+        borderTop: "1px solid rgba(124,58,237,0.15)",
+        padding: "24px 32px",
+        textAlign: "center",
+        color: "rgba(240,238,255,0.2)", fontSize: 13,
+      }}>
+        сделано с ⚡ — Артём, 2024
       </footer>
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        @media (max-width: 768px) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   );
 }
